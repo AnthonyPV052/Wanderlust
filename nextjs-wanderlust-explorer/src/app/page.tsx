@@ -1,102 +1,60 @@
-"use client";
-
-import { useMemo, useState, useCallback } from "react";
-import { experiences } from "@/app/data/experiences";
-import type { Experience, FavoriteIds } from "@/app/types";
-import ExperienceFilters from "@/app/components/ExperienceFilters";
-import ExperienceList from "@/app/components/ExperienceList";
+import Link from "next/link";
+import { categories } from "@/data/experiences";
 
 export default function Home() {
-  const [search, setSearch] = useState("");
-  const [category, setCategory] = useState<Experience["category"] | "all">("all");
-  const [destination, setDestination] = useState<string>("all");
-  const [favorites, setFavorites] = useState<FavoriteIds>([]);
-
-  const destinations = useMemo(
-    () => Array.from(new Set(experiences.map((e) => e.destination))).sort(),
-    [],
-  );
-
-  const filtered = useMemo(() => {
-    const q = search.toLowerCase().trim();
-    return experiences.filter((exp) => {
-      if (category !== "all" && exp.category !== category) return false;
-      if (destination !== "all" && exp.destination !== destination) return false;
-      if (
-        q &&
-        !exp.title.toLowerCase().includes(q) &&
-        !exp.description.toLowerCase().includes(q) &&
-        !exp.destination.toLowerCase().includes(q)
-      )
-        return false;
-      return true;
-    });
-  }, [search, category, destination]);
-
-  const toggleFavorite = useCallback((id: string) => {
-    setFavorites((prev) =>
-      prev.includes(id) ? prev.filter((f) => f !== id) : [...prev, id],
-    );
-  }, []);
-
   return (
-    <div className="flex min-h-screen flex-col bg-zinc-50 dark:bg-zinc-950">
-      {/* Header */}
-      <header className="sticky top-0 z-30 border-b border-zinc-200 bg-white/80 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/80">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-          <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
-            🌍 Wanderlust Explorer
-          </h1>
-          <span className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-600 dark:bg-indigo-900/40 dark:text-indigo-300">
-            {favorites.length} ❤️
-          </span>
-        </div>
-      </header>
-
-      {/* Main */}
-      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
-        {/* Hero */}
-        <section className="mb-8">
-          <h2 className="text-3xl font-extrabold tracking-tight text-zinc-900 sm:text-4xl dark:text-zinc-100">
-            Discover unique experiences
-          </h2>
-          <p className="mt-2 max-w-2xl text-base text-zinc-500 dark:text-zinc-400">
-            Browse {experiences.length} hand‑picked adventures, cultural tours,
-            culinary journeys and more — all around the world.
-          </p>
-        </section>
-
-        {/* Filters */}
-        <section className="mb-8">
-          <ExperienceFilters
-            search={search}
-            category={category}
-            destination={destination}
-            destinations={destinations}
-            onSearchChange={setSearch}
-            onCategoryChange={setCategory}
-            onDestinationChange={setDestination}
-          />
-        </section>
-
-        {/* Results count */}
-        <p className="mb-4 text-sm text-zinc-500 dark:text-zinc-400">
-          Showing <strong className="text-zinc-700 dark:text-zinc-200">{filtered.length}</strong>{" "}
-          experience{filtered.length !== 1 && "s"}
+    <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-16 sm:px-6 lg:px-8">
+      {/* Hero */}
+      <section className="flex flex-col items-center text-center">
+        <span className="text-6xl">🌍</span>
+        <h1 className="mt-6 text-4xl font-extrabold tracking-tight text-zinc-900 sm:text-5xl dark:text-zinc-100">
+          Wanderlust Explorer
+        </h1>
+        <p className="mt-4 max-w-xl text-lg text-zinc-500 dark:text-zinc-400">
+          Discover hand‑picked adventures, cultural tours, culinary journeys and
+          more — all around the world.
         </p>
+        <Link
+          href="/experiences"
+          className="mt-8 inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-8 py-3 text-base font-semibold text-white shadow-sm transition hover:bg-indigo-700 active:scale-[0.98]"
+        >
+          Explore experiences
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+            stroke="currentColor"
+            className="h-4 w-4"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </Link>
+      </section>
 
-        {/* Grid */}
-        <ExperienceList
-          experiences={filtered}
-          favorites={favorites}
-          onToggleFavorite={toggleFavorite}
-        />
-      </main>
-
-      {/* Footer */}
-      <footer className="border-t border-zinc-200 py-6 text-center text-xs text-zinc-400 dark:border-zinc-800 dark:text-zinc-600">
-        © 2026 Wanderlust Explorer — built with Next.js &amp; Tailwind CSS
-      </footer>
-    </div>
+      {/* Categories preview */}
+      <section className="mt-20">
+        <h2 className="text-center text-2xl font-bold text-zinc-900 dark:text-zinc-100">
+          Browse by category
+        </h2>
+        <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+          {categories.map((cat) => (
+            <Link
+              key={cat.id}
+              href={`/experiences?category=${cat.id}`}
+              className="flex flex-col items-center gap-3 rounded-2xl bg-white p-6 shadow-sm ring-1 ring-zinc-200 transition hover:shadow-md dark:bg-zinc-900 dark:ring-zinc-800"
+            >
+              <span className="text-4xl">{cat.emoji}</span>
+              <span className="text-sm font-semibold text-zinc-700 dark:text-zinc-200">
+                {cat.label}
+              </span>
+              <span className="text-center text-xs text-zinc-400 dark:text-zinc-500">
+                {cat.description}
+              </span>
+            </Link>
+          ))}
+        </div>
+      </section>
+    </main>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import type { ExperienceListProps } from "@/app/types";
+import type { ExperienceListProps } from "@/types";
 import ExperienceCard from "./ExperienceCard";
 
 export default function ExperienceList({

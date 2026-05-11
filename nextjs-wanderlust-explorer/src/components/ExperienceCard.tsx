@@ -1,6 +1,7 @@
 "use client";
 
-import type { ExperienceCardProps } from "@/app/types";
+import Link from "next/link";
+import type { ExperienceCardProps } from "@/types";
 
 export default function ExperienceCard({
   experience,
@@ -34,7 +35,7 @@ export default function ExperienceCard({
       </div>
 
       {/* Body */}
-      <div className="flex flex-1 flex-col gap-2 p-4">
+      <Link href={`/experience/${experience.id}`} className="flex flex-1 flex-col gap-2 p-4">
         <h3 className="text-base font-semibold leading-snug text-zinc-900 dark:text-zinc-100">
           {experience.title}
         </h3>
@@ -57,7 +58,7 @@ export default function ExperienceCard({
             ★ {experience.rating.toFixed(1)}
           </span>
         </div>
-      </div>
+      </Link>
     </article>
   );
 }

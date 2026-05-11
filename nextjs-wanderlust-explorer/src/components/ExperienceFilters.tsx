@@ -1,6 +1,6 @@
 "use client";
 
-import type { ExperienceFiltersProps, Experience } from "@/app/types";
+import type { ExperienceFiltersProps, Experience } from "@/types";
 
 const CATEGORIES: (Experience["category"] | "all")[] = [
   "all",
